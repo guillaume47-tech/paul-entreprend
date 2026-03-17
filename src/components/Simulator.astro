@@ -145,43 +145,29 @@ function simCalc() {
             <span class="sim-card-name">Micro-entreprise</span>
             ${winner === 'micro' ? '<span class="sim-badge sim-badge-winner">+ rentable</span>' : ''}
           </div>
-          <table class="sim-table">
-            <tr><td>CA brut</td><td class="sim-val">${fmt(ca)}</td></tr>
-            <tr class="sim-row-neg"><td>Cotisations URSSAF (${Math.round(cotisation * 100)}%)</td><td class="sim-val">${fmt(-mCotis, true)}</td></tr>
-            <tr class="sim-row-neg"><td>
-              Impôt sur le revenu<br>
-              <small>CA × ${Math.round((1 - abattement) * 100)}% × ${Math.round(tmi * 100)}% TMI</small>
-            </td><td class="sim-val">${fmt(-mIR, true)}</td></tr>
-            <tr class="sim-row-neg"><td>
-              Charges réelles<br>
-              <small>non déductibles en micro</small>
-            </td><td class="sim-val">${fmt(-mCharges, true)}</td></tr>
-            <tr class="sim-row-total"><td><strong>Net en poche</strong></td><td class="sim-val sim-total">${fmt(mNet)}</td></tr>
-          </table>
+          <div class="sim-card-net">${fmt(mNet)}</div>
           <div class="sim-pct">${mPct} du CA</div>
+          <div class="sim-breakdown">
+            <div class="sim-line"><span>CA brut</span><span>${fmt(ca)}</span></div>
+            <div class="sim-line sim-line-neg"><span>Cotisations (${Math.round(cotisation * 100)}%)</span><span>${fmt(-mCotis, true)}</span></div>
+            <div class="sim-line sim-line-neg"><span>IR (abat. ${Math.round(abattement * 100)}%, TMI ${Math.round(tmi * 100)}%)</span><span>${fmt(-mIR, true)}</span></div>
+            <div class="sim-line sim-line-neg"><span>Charges réelles <em>non déductibles</em></span><span>${fmt(-mCharges, true)}</span></div>
+          </div>
         </div>
 
         <div class="sim-card-v2${winner === 'sasu' ? ' sim-card-winner' : ''}">
           <div class="sim-card-header">
-            <span class="sim-card-name">SASU <small>(salaire + dividendes)</small></span>
+            <span class="sim-card-name">SASU</span>
             ${winner === 'sasu' ? '<span class="sim-badge sim-badge-winner">+ rentable</span>' : ''}
           </div>
-          <table class="sim-table">
-            <tr><td>CA brut</td><td class="sim-val">${fmt(ca)}</td></tr>
-            <tr class="sim-row-neg"><td>Charges déduites</td><td class="sim-val">${fmt(-sCharges, true)}</td></tr>
-            <tr class="sim-row-neg"><td>Comptabilité</td><td class="sim-val">${fmt(-sCompta, true)}</td></tr>
-            <tr class="sim-row-sub"><td><strong>CA net exploitable</strong></td><td class="sim-val">${fmt(sCaNet)}</td></tr>
-            <tr><td>Salaire net</td><td class="sim-val">${fmt(sSalNet)}</td></tr>
-            <tr class="sim-row-neg"><td>IR sur salaire</td><td class="sim-val">${fmt(-sIRSal, true)}</td></tr>
-            <tr class="sim-row-sub"><td>→ Salaire après IR</td><td class="sim-val">${fmt(sSalNetIR)}</td></tr>
-            <tr><td>Résultat fiscal</td><td class="sim-val">${fmt(sResultat)}</td></tr>
-            <tr class="sim-row-neg"><td>IS (15%/25%)</td><td class="sim-val">${fmt(-sIS, true)}</td></tr>
-            <tr><td>Dividendes bruts</td><td class="sim-val">${fmt(sDivBrut)}</td></tr>
-            <tr class="sim-row-neg"><td>Flat tax (30%)</td><td class="sim-val">${fmt(-sFlatTax, true)}</td></tr>
-            <tr class="sim-row-sub"><td>→ Dividendes nets</td><td class="sim-val">${fmt(sDivNet)}</td></tr>
-            <tr class="sim-row-total"><td><strong>Net en poche</strong></td><td class="sim-val sim-total">${fmt(sNet)}</td></tr>
-          </table>
+          <div class="sim-card-net">${fmt(sNet)}</div>
           <div class="sim-pct">${sPct} du CA</div>
+          <div class="sim-breakdown">
+            <div class="sim-line"><span>CA brut</span><span>${fmt(ca)}</span></div>
+            <div class="sim-line sim-line-neg"><span>Charges + compta</span><span>${fmt(-(sCharges + sCompta), true)}</span></div>
+            <div class="sim-line sim-line-neg"><span>Cotis. patronales + IS + flat tax</span><span>${fmt(-(sPatron + sIS + sFlatTax), true)}</span></div>
+            <div class="sim-line sim-line-neg"><span>IR sur salaire</span><span>${fmt(-sIRSal, true)}</span></div>
+          </div>
         </div>
 
       </div>

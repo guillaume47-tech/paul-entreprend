@@ -229,22 +229,26 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px;
 .sim-note { font-size: 12px; color: var(--text3); margin-top: 14px; text-align: center; }
 
 /* ===== SIMULATEUR V2 ===== */
-.sim-cards-v2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
-.sim-card-v2 { background: var(--bg3); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; }
+.sim-cards-v2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+.sim-card-v2 { background: var(--bg3); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px 18px; }
 .sim-card-winner { border-color: var(--green); background: var(--green-bg); }
-.sim-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.sim-card-name { font-size: 14px; font-weight: 700; color: var(--text); }
-.sim-badge { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 5px; }
+.sim-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.sim-card-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.sim-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 5px; }
 .sim-badge-winner { background: var(--green); color: #fff; }
-.sim-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-.sim-table td { padding: 4px 2px; border: none; color: var(--text2); }
-.sim-table td.sim-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; white-space: nowrap; }
+.sim-card-net { font-size: 26px; font-weight: 800; color: var(--text); margin: 6px 0 2px; }
+.sim-card-winner .sim-card-net { color: var(--green-dark); }
+.sim-pct { font-size: 11px; color: var(--text3); margin-bottom: 14px; }
+.sim-breakdown { border-top: 1px solid var(--border2); padding-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.sim-line { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); }
+.sim-line span:last-child { font-weight: 500; white-space: nowrap; margin-left: 8px; }
+.sim-line em { font-style: normal; font-size: 10px; color: var(--text3); }
+.sim-line-neg span:last-child { color: var(--coral); }
 .sim-neg { color: var(--coral); }
 .sim-row-neg td { color: var(--text3); font-size: 12px; }
 .sim-row-sub td { border-top: 1px solid var(--border2); font-weight: 600; color: var(--text); padding-top: 6px; }
 .sim-row-total td { border-top: 2px solid var(--border2); padding-top: 8px; margin-top: 4px; }
 .sim-total { font-size: 16px; font-weight: 800; color: var(--green-dark); }
-.sim-pct { font-size: 11px; color: var(--text3); text-align: right; margin-top: 6px; }
 .sim-type-hint { font-size: 11px; color: var(--text3); margin-bottom: 16px; }
 .sim-trap-note { font-size: 11px; color: var(--coral); margin-top: 6px; background: var(--coral-bg); border-radius: 6px; padding: 8px 10px; line-height: 1.5; }
 .sim-note-main { font-size: 13px; color: var(--text2); margin-bottom: 6px; line-height: 1.6; }
