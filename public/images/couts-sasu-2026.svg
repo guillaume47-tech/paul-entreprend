@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 240" role="img" aria-label="Coûts réels de création d'une SASU en 2026 : annonce légale 141€, immatriculation 37,45€, bénéficiaires effectifs 21,41€, total 238,45€">
+  <title>Coûts réels de création d'une SASU en 2026</title>
+  <rect width="560" height="240" fill="#f8faff" rx="12"/>
+
+  <!-- Titre -->
+  <text x="28" y="38" font-family="Inter, system-ui, sans-serif" font-size="16" font-weight="700" fill="#192152">Coûts réels de création d'une SASU en 2026</text>
+  <text x="28" y="56" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#94a3b8">Frais administratifs incompressibles (hors frais de service plateforme)</text>
+
+  <!-- Ligne 1 : Annonce légale 141€ -->
+  <text x="28" y="90" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#475569">Annonce légale de constitution</text>
+  <rect x="28" y="96" width="370" height="22" rx="4" fill="#3058e5" opacity="0.15"/>
+  <rect x="28" y="96" width="370" height="22" rx="4" fill="#3058e5"/>
+  <text x="406" y="112" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#192152">141 €</text>
+
+  <!-- Ligne 2 : Immatriculation 37,45€ -->
+  <text x="28" y="138" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#475569">Immatriculation RCS (Guichet Unique)</text>
+  <rect x="28" y="144" width="98" height="22" rx="4" fill="#3058e5" opacity="0.15"/>
+  <rect x="28" y="144" width="98" height="22" rx="4" fill="#3058e5"/>
+  <text x="134" y="160" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#192152">37,45 €</text>
+
+  <!-- Ligne 3 : Bénéficiaires effectifs 21,41€ -->
+  <text x="28" y="186" font-family="Inter, system-ui, sans-serif" font-size="13" fill="#475569">Déclaration des bénéficiaires effectifs</text>
+  <rect x="28" y="192" width="56" height="22" rx="4" fill="#3058e5" opacity="0.15"/>
+  <rect x="28" y="192" width="56" height="22" rx="4" fill="#3058e5"/>
+  <text x="92" y="208" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#192152">21,41 €</text>
+
+  <!-- Total -->
+  <rect x="380" y="164" width="152" height="54" rx="8" fill="#192152"/>
+  <text x="456" y="186" font-family="Inter, system-ui, sans-serif" font-size="12" fill="rgba(255,255,255,0.7)" text-anchor="middle">TOTAL RÉEL DE PAUL</text>
+  <text x="456" y="208" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="800" fill="#fefbc5" text-anchor="middle">238,45 €</text>
+</svg>

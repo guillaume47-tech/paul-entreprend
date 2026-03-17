@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200" role="img" aria-label="Timeline des 6 étapes de création d'une SASU : dénomination, statuts, capital, annonce légale, guichet unique, réception du Kbis">
+  <title>Les 6 étapes pour créer une SASU en 2026</title>
+  <rect width="560" height="200" fill="#f8faff" rx="12"/>
+
+  <!-- Titre -->
+  <text x="28" y="36" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="700" fill="#192152">Les 6 étapes pour créer ta SASU en 2026</text>
+  <text x="28" y="52" font-family="Inter, system-ui, sans-serif" font-size="12" fill="#94a3b8">Tout se fait en ligne — délai total : 1 à 3 semaines</text>
+
+  <!-- Ligne de connexion -->
+  <line x1="54" y1="100" x2="506" y2="100" stroke="#e2e8f0" stroke-width="2"/>
+
+  <!-- Étape 1 -->
+  <circle cx="54" cy="100" r="18" fill="#3058e5"/>
+  <text x="54" y="105" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+  <text x="54" y="132" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#192152" text-anchor="middle">Dénomina-</text>
+  <text x="54" y="144" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#192152" text-anchor="middle">tion &amp; siège</text>
+  <text x="54" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">Jour 1</text>
+
+  <!-- Étape 2 -->
+  <circle cx="144" cy="100" r="18" fill="#3058e5"/>
+  <text x="144" y="105" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+  <text x="144" y="132" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#192152" text-anchor="middle">Rédaction</text>
+  <text x="144" y="144" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#192152" text-anchor="middle">des statuts</text>
+  <text x="144" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">J+1 à J+3</text>
+
+  <!-- Étape 3 -->
+  <circle cx="234" cy="100" r="18" fill="#3058e5"/>
+  <text x="234" y="105" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+  <text x="234" y="132" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#192152" text-anchor="middle">Dépôt du</text>
+  <text x="234" y="144" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#192152" text-anchor="middle">capital</text>
+  <text x="234" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">J+1 à J+3</text>
+
+  <!-- Étape 4 -->
+  <circle cx="324" cy="100" r="18" fill="#3058e5"/>
+  <text x="324" y="105" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+  <text x="324" y="132" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#192152" text-anchor="middle">Annonce</text>
+  <text x="324" y="144" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#192152" text-anchor="middle">légale</text>
+  <text x="324" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">Instantané</text>
+
+  <!-- Étape 5 -->
+  <circle cx="414" cy="100" r="18" fill="#3058e5"/>
+  <text x="414" y="105" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">5</text>
+  <text x="414" y="132" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#192152" text-anchor="middle">Guichet</text>
+  <text x="414" y="144" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#192152" text-anchor="middle">Unique INPI</text>
+  <text x="414" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">1h en ligne</text>
+
+  <!-- Étape 6 -->
+  <circle cx="506" cy="100" r="18" fill="#0F7B5F"/>
+  <text x="506" y="105" font-family="Inter, system-ui, sans-serif" font-size="13" font-weight="700" fill="#fff" text-anchor="middle">6</text>
+  <text x="506" y="132" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#0F7B5F" font-weight="700" text-anchor="middle">Réception</text>
+  <text x="506" y="144" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#0F7B5F" font-weight="700" text-anchor="middle">du Kbis ✓</text>
+  <text x="506" y="162" font-family="Inter, system-ui, sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">J+7 à J+15</text>
+
+  <!-- Durée totale -->
+  <rect x="196" y="64" width="168" height="22" rx="11" fill="#eef2fd"/>
+  <text x="280" y="79" font-family="Inter, system-ui, sans-serif" font-size="11" font-weight="600" fill="#3058e5" text-anchor="middle">Durée totale : 1 à 3 semaines</text>
+</svg>
