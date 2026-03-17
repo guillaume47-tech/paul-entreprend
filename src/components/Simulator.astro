@@ -1,5 +1,5 @@
 ---
-// Simulateur Micro-entreprise vs SASU — Paul Entreprend
+// Simulateur Micro-entreprise vs SASU — Paul Entreprend v2
 ---
 
 <div class="widget-section">
@@ -17,7 +17,7 @@
 
     <div class="sim-input">
       <div class="sim-input-header">
-        <span>Taux marginal d'imposition</span>
+        <span>Taux marginal d'imposition (TMI)</span>
         <span class="sim-input-val" id="sim-tmi-val">30%</span>
       </div>
       <input type="range" min="0" max="45" step="1" value="30" id="sim-tmi" />
@@ -25,18 +25,21 @@
 
     <div class="sim-input">
       <div class="sim-input-header">
-        <span>Charges professionnelles (% du CA)</span>
+        <span>Charges professionnelles</span>
         <span class="sim-input-val" id="sim-charges-val">10%</span>
       </div>
       <input type="range" min="0" max="50" step="5" value="10" id="sim-charges" />
       <div class="sim-charges-hint">Outils, abonnements, déplacements, sous-traitance… En micro, ces charges ne sont pas déductibles.</div>
+      <div class="sim-trap-note" id="sim-trap-note"></div>
     </div>
 
     <div class="sim-toggle-label">Type d'activité</div>
     <div class="sim-toggle">
-      <div class="sim-toggle-btn active" data-type="service" id="btn-service">Prestation de service</div>
-      <div class="sim-toggle-btn" data-type="commerce" id="btn-commerce">Vente de marchandises</div>
+      <div class="sim-toggle-btn active" data-type="bnc" id="btn-bnc">BNC / Libérale</div>
+      <div class="sim-toggle-btn" data-type="service" id="btn-service">BIC Services</div>
+      <div class="sim-toggle-btn" data-type="vente" id="btn-vente">Vente</div>
     </div>
+    <div class="sim-type-hint" id="sim-type-hint">Consultant, dev, graphiste, formateur, coach…</div>
 
     <div id="sim-result"></div>
     <div class="sim-note" id="sim-note"></div>
@@ -44,10 +47,29 @@
 </div>
 
 <script>
-let simType = 'service';
+const MICRO_PARAMS: Record<string, { cotisation: number; abattement: number }> = {
+  bnc:     { cotisation: 0.234, abattement: 0.34 },
+  service: { cotisation: 0.215, abattement: 0.50 },
+  vente:   { cotisation: 0.124, abattement: 0.71  },
+};
 
-function simFmt(n: number) {
-  return Math.round(n).toLocaleString('fr-FR') + ' €';
+const TYPE_HINTS: Record<string, string> = {
+  bnc:     'Consultant, dev, graphiste, formateur, coach…',
+  service: 'Artisan, transport, réparation, restauration…',
+  vente:   'E-commerce, achat-revente, commerce de détail…',
+};
+
+let simType = 'bnc';
+
+function fmt(n: number, sign = false): string {
+  const abs = Math.round(Math.abs(n)).toLocaleString('fr-FR');
+  if (sign && n < 0) return `<span class="sim-neg">−${abs} €</span>`;
+  if (sign && n > 0) return `+${abs} €`;
+  return `${Math.round(n).toLocaleString('fr-FR')} €`;
+}
+
+function pct(n: number, total: number): string {
+  return total > 0 ? Math.round(n / total * 100) + '%' : '0%';
 }
 
 function simSetType(t: string) {
@@ -55,6 +77,8 @@ function simSetType(t: string) {
   document.querySelectorAll('.sim-toggle-btn').forEach(b => {
     b.classList.toggle('active', (b as HTMLElement).dataset.type === t);
   });
+  const hint = document.getElementById('sim-type-hint');
+  if (hint) hint.textContent = TYPE_HINTS[t];
   simCalc();
 }
 
@@ -63,80 +87,134 @@ function simCalc() {
   const tmi = Number((document.getElementById('sim-tmi') as HTMLInputElement).value) / 100;
   const chargesPct = Number((document.getElementById('sim-charges') as HTMLInputElement).value) / 100;
 
+  // Mise à jour labels
   const caValEl = document.getElementById('sim-ca-val');
   const tmiValEl = document.getElementById('sim-tmi-val');
   const chargesValEl = document.getElementById('sim-charges-val');
-  if (caValEl) caValEl.textContent = simFmt(ca);
+  if (caValEl) caValEl.textContent = fmt(ca);
   if (tmiValEl) tmiValEl.textContent = Math.round(tmi * 100) + '%';
-  if (chargesValEl) chargesValEl.textContent = Math.round(chargesPct * 100) + '% (' + simFmt(ca * chargesPct) + ')';
+  if (chargesValEl) chargesValEl.textContent = Math.round(chargesPct * 100) + '% (' + fmt(ca * chargesPct) + ')';
 
-  // MICRO
-  const cotM = simType === 'service' ? 0.231 : 0.124;
-  const abat = simType === 'service' ? 0.50 : 0.71;
-  const mCotis = ca * cotM;
-  const mIR = ca * (1 - abat) * tmi;
-  const mChargesReelles = ca * chargesPct;
-  const mNet = ca - mCotis - mIR - mChargesReelles;
+  const { cotisation, abattement } = MICRO_PARAMS[simType];
 
-  // SASU
-  const chargesReelles = ca * chargesPct;
-  const comptaCost = 1500;
-  const caNet = ca - chargesReelles - comptaCost;
-  const sBr = Math.max(0, caNet * 0.5);
-  const sPatron = sBr * 0.45;
-  const sSal = sBr * 0.22;
-  const sNetSalaire = sBr - sSal;
-  const sResultat = Math.max(0, caNet - sBr - sPatron);
+  // Note piège micro (toujours visible)
+  const trapEl = document.getElementById('sim-trap-note');
+  if (trapEl) {
+    trapEl.innerHTML = `En micro-entreprise, tes charges réelles ne réduisent PAS ton impôt. L'abattement forfaitaire de <strong>${Math.round(abattement * 100)}%</strong> est un forfait fixe, même si tes charges réelles dépassent ce montant.`;
+  }
+
+  // ===== MICRO =====
+  const mCotis = ca * cotisation;
+  const mRevenuImposable = ca * (1 - abattement);
+  const mIR = mRevenuImposable * tmi;
+  const mCharges = ca * chargesPct;
+  const mNet = ca - mCotis - mIR - mCharges;
+
+  // ===== SASU =====
+  const sCharges = ca * chargesPct;
+  const sCompta = 1500;
+  const sCaNet = ca - sCharges - sCompta;
+  const sSalBrut = Math.max(0, sCaNet * 0.5);
+  const sPatron = sSalBrut * 0.45;
+  const sSalCh = sSalBrut * 0.22;
+  const sSalNet = sSalBrut - sSalCh;
+  const sIRSal = sSalNet * tmi;
+  const sSalNetIR = sSalNet - sIRSal;
+  const sResultat = Math.max(0, sCaNet - sSalBrut - sPatron);
   const sIS = sResultat <= 42500 ? sResultat * 0.15 : 42500 * 0.15 + (sResultat - 42500) * 0.25;
   const sDivBrut = Math.max(0, sResultat - sIS);
-  const sDivNet = sDivBrut * 0.70;
-  const sIRsalaire = sNetSalaire * tmi;
-  const sTotal = sNetSalaire - sIRsalaire + sDivNet;
+  const sFlatTax = sDivBrut * 0.30;
+  const sDivNet = sDivBrut - sFlatTax;
+  const sNet = sSalNetIR + sDivNet;
 
-  const mPct = ca > 0 ? Math.round(mNet / ca * 100) : 0;
-  const sPct = ca > 0 ? Math.round(sTotal / ca * 100) : 0;
-  const w = mNet >= sTotal ? 'micro' : 'sasu';
-  const diff = Math.abs(mNet - sTotal);
+  const mPct = pct(mNet, ca);
+  const sPct = pct(sNet, ca);
+  const winner = mNet >= sNet ? 'micro' : 'sasu';
+  const diff = Math.abs(mNet - sNet);
 
-  const detailMicro = `Cotisations ${simFmt(mCotis)} · IR ${simFmt(mIR)} · Charges réelles ${simFmt(mChargesReelles)} (non déduites)`;
-  const detailSasu = `Salaire net ${simFmt(sNetSalaire)} · IR ${simFmt(sIRsalaire)} · Dividendes nets ${simFmt(sDivNet)} · Compta ${simFmt(comptaCost)}`;
+  const typeLabel: Record<string, string> = { bnc: 'BNC/Libérale', service: 'BIC Services', vente: 'Vente' };
 
+  // ===== RENDU CARDS =====
   const resultEl = document.getElementById('sim-result');
   if (resultEl) {
     resultEl.innerHTML = `
-      <div class="sim-cards">
-        <div class="sim-card">
-          <div class="sim-card-label">Micro-entreprise${w === 'micro' ? '<span class="sim-winner sim-winner-purple">+ rentable</span>' : ''}</div>
-          <div class="sim-card-val sim-purple">${simFmt(mNet)}</div>
-          <div class="sim-card-sub">${mPct}% du CA en poche</div>
-          <div class="sim-card-detail">${detailMicro}</div>
+      <div class="sim-cards-v2">
+
+        <div class="sim-card-v2${winner === 'micro' ? ' sim-card-winner' : ''}">
+          <div class="sim-card-header">
+            <span class="sim-card-name">Micro-entreprise</span>
+            ${winner === 'micro' ? '<span class="sim-badge sim-badge-winner">+ rentable</span>' : ''}
+          </div>
+          <table class="sim-table">
+            <tr><td>CA brut</td><td class="sim-val">${fmt(ca)}</td></tr>
+            <tr class="sim-row-neg"><td>Cotisations URSSAF (${Math.round(cotisation * 100)}%)</td><td class="sim-val">${fmt(-mCotis, true)}</td></tr>
+            <tr class="sim-row-neg"><td>
+              Impôt sur le revenu<br>
+              <small>CA × ${Math.round((1 - abattement) * 100)}% × ${Math.round(tmi * 100)}% TMI</small>
+            </td><td class="sim-val">${fmt(-mIR, true)}</td></tr>
+            <tr class="sim-row-neg"><td>
+              Charges réelles<br>
+              <small>non déductibles en micro</small>
+            </td><td class="sim-val">${fmt(-mCharges, true)}</td></tr>
+            <tr class="sim-row-total"><td><strong>Net en poche</strong></td><td class="sim-val sim-total">${fmt(mNet)}</td></tr>
+          </table>
+          <div class="sim-pct">${mPct} du CA</div>
         </div>
-        <div class="sim-card">
-          <div class="sim-card-label">SASU${w === 'sasu' ? '<span class="sim-winner sim-winner-green">+ rentable</span>' : ''}</div>
-          <div class="sim-card-val sim-green">${simFmt(sTotal)}</div>
-          <div class="sim-card-sub">${sPct}% du CA en poche</div>
-          <div class="sim-card-detail">${detailSasu}</div>
+
+        <div class="sim-card-v2${winner === 'sasu' ? ' sim-card-winner' : ''}">
+          <div class="sim-card-header">
+            <span class="sim-card-name">SASU <small>(salaire + dividendes)</small></span>
+            ${winner === 'sasu' ? '<span class="sim-badge sim-badge-winner">+ rentable</span>' : ''}
+          </div>
+          <table class="sim-table">
+            <tr><td>CA brut</td><td class="sim-val">${fmt(ca)}</td></tr>
+            <tr class="sim-row-neg"><td>Charges déduites</td><td class="sim-val">${fmt(-sCharges, true)}</td></tr>
+            <tr class="sim-row-neg"><td>Comptabilité</td><td class="sim-val">${fmt(-sCompta, true)}</td></tr>
+            <tr class="sim-row-sub"><td><strong>CA net exploitable</strong></td><td class="sim-val">${fmt(sCaNet)}</td></tr>
+            <tr><td>Salaire net</td><td class="sim-val">${fmt(sSalNet)}</td></tr>
+            <tr class="sim-row-neg"><td>IR sur salaire</td><td class="sim-val">${fmt(-sIRSal, true)}</td></tr>
+            <tr class="sim-row-sub"><td>→ Salaire après IR</td><td class="sim-val">${fmt(sSalNetIR)}</td></tr>
+            <tr><td>Résultat fiscal</td><td class="sim-val">${fmt(sResultat)}</td></tr>
+            <tr class="sim-row-neg"><td>IS (15%/25%)</td><td class="sim-val">${fmt(-sIS, true)}</td></tr>
+            <tr><td>Dividendes bruts</td><td class="sim-val">${fmt(sDivBrut)}</td></tr>
+            <tr class="sim-row-neg"><td>Flat tax (30%)</td><td class="sim-val">${fmt(-sFlatTax, true)}</td></tr>
+            <tr class="sim-row-sub"><td>→ Dividendes nets</td><td class="sim-val">${fmt(sDivNet)}</td></tr>
+            <tr class="sim-row-total"><td><strong>Net en poche</strong></td><td class="sim-val sim-total">${fmt(sNet)}</td></tr>
+          </table>
+          <div class="sim-pct">${sPct} du CA</div>
         </div>
+
       </div>
     `;
   }
 
-  let noteExtra = '';
-  if (chargesPct >= 0.15) {
-    noteExtra = ` En micro, tes charges réelles ne sont pas déductibles — l'abattement forfaitaire de ${simType === 'service' ? '50' : '71'}% est censé les couvrir.`;
-  }
-
+  // ===== NOTE DYNAMIQUE =====
   const noteEl = document.getElementById('sim-note');
   if (noteEl) {
-    noteEl.innerHTML = `Différence : <strong>${simFmt(diff)}/an</strong> en faveur de la <strong>${w === 'micro' ? 'micro-entreprise' : 'SASU'}</strong>. Taux URSSAF 2026, IS 15% puis 25%, flat tax 30%.${noteExtra}`;
+    const caStr = fmt(ca);
+    const diffStr = fmt(diff);
+    const tLabel = typeLabel[simType];
+    let note = '';
+    if (diff < 2000) {
+      note = `Les deux statuts se valent à ce niveau de CA. La SASU offre une meilleure protection sociale et plus de flexibilité d'évolution — c'est souvent ce qui fait la différence.`;
+    } else if (winner === 'micro') {
+      note = `À ${caStr} de CA en ${tLabel}, la micro-entreprise te laisse <strong>${diffStr} de plus par an</strong>. Mais si ton CA augmente ou tes charges montent, refais la simulation — le point de bascule est souvent plus bas qu'on ne croit.`;
+    } else {
+      note = `À ${caStr} de CA en ${tLabel}, la SASU te laisse <strong>${diffStr} de plus par an</strong> grâce à la déduction des charges réelles et l'optimisation salaire + dividendes. <a href="https://www.legalplace.fr/?ref=paulentreprend" target="_blank" rel="noopener sponsored">Créer ma SASU avec LegalPlace →</a>`;
+    }
+    noteEl.innerHTML = `
+      <div class="sim-note-main">${note}</div>
+      <div class="sim-note-legal">Simulation indicative — taux URSSAF 2026, IS 15%/25%, flat tax 30%. Consultez un expert-comptable pour votre situation.</div>
+    `;
   }
 }
 
 document.getElementById('sim-ca')?.addEventListener('input', simCalc);
 document.getElementById('sim-tmi')?.addEventListener('input', simCalc);
 document.getElementById('sim-charges')?.addEventListener('input', simCalc);
+document.getElementById('btn-bnc')?.addEventListener('click', () => simSetType('bnc'));
 document.getElementById('btn-service')?.addEventListener('click', () => simSetType('service'));
-document.getElementById('btn-commerce')?.addEventListener('click', () => simSetType('commerce'));
+document.getElementById('btn-vente')?.addEventListener('click', () => simSetType('vente'));
 
 simCalc();
 </script>

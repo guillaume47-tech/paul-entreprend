@@ -198,6 +198,8 @@ article.paul tr:hover td { background: var(--bg3); }
 .quiz-pros { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 18px; }
 .quiz-pro { font-size: 13px; color: var(--text2); }
 .quiz-restart { font-size: 13px; color: var(--text3); cursor: pointer; text-decoration: underline; margin-top: 10px; display: inline-block; }
+.quiz-back { font-size: 12px; color: var(--text3); cursor: pointer; display: inline-block; margin-bottom: 10px; transition: color .15s; }
+.quiz-back:hover { color: var(--accent); }
 
 /* ===== SIMULATEUR ===== */
 .sim-wrap { max-width: 560px; margin: 0 auto; }
@@ -225,6 +227,29 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px;
 .sim-winner-purple { background: var(--purple-bg); color: var(--purple); }
 .sim-winner-green { background: var(--green-bg); color: var(--green); }
 .sim-note { font-size: 12px; color: var(--text3); margin-top: 14px; text-align: center; }
+
+/* ===== SIMULATEUR V2 ===== */
+.sim-cards-v2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 20px; }
+.sim-card-v2 { background: var(--bg3); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 16px; }
+.sim-card-winner { border-color: var(--green); background: var(--green-bg); }
+.sim-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.sim-card-name { font-size: 14px; font-weight: 700; color: var(--text); }
+.sim-badge { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 5px; }
+.sim-badge-winner { background: var(--green); color: #fff; }
+.sim-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.sim-table td { padding: 4px 2px; border: none; color: var(--text2); }
+.sim-table td.sim-val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; white-space: nowrap; }
+.sim-neg { color: var(--coral); }
+.sim-row-neg td { color: var(--text3); font-size: 12px; }
+.sim-row-sub td { border-top: 1px solid var(--border2); font-weight: 600; color: var(--text); padding-top: 6px; }
+.sim-row-total td { border-top: 2px solid var(--border2); padding-top: 8px; margin-top: 4px; }
+.sim-total { font-size: 16px; font-weight: 800; color: var(--green-dark); }
+.sim-pct { font-size: 11px; color: var(--text3); text-align: right; margin-top: 6px; }
+.sim-type-hint { font-size: 11px; color: var(--text3); margin-bottom: 16px; }
+.sim-trap-note { font-size: 11px; color: var(--coral); margin-top: 6px; background: var(--coral-bg); border-radius: 6px; padding: 8px 10px; line-height: 1.5; }
+.sim-note-main { font-size: 13px; color: var(--text2); margin-bottom: 6px; line-height: 1.6; }
+.sim-note-legal { font-size: 11px; color: var(--text3); font-style: italic; }
+@media (max-width: 600px) { .sim-cards-v2 { grid-template-columns: 1fr; } }
 
 /* ===== CHECKLIST ===== */
 .check-wrap { max-width: 500px; margin: 0 auto; }

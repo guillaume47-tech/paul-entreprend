@@ -105,6 +105,19 @@ const quizResults: Record<string, { title: string; desc: string; pros: string[];
 
 let qCur = 0;
 let qScores: Record<string, number> = {};
+let qAnswers: number[] = [];
+
+function qBack() {
+  if (qCur <= 0) return;
+  qCur--;
+  const prevAnswer = qAnswers[qCur];
+  if (prevAnswer !== undefined) {
+    const s = quizQs[qCur].options[prevAnswer].scores;
+    for (const [k, v] of Object.entries(s)) qScores[k] = (qScores[k] || 0) - v;
+    delete qAnswers[qCur];
+  }
+  qRender();
+}
 
 function qRender() {
   const el = document.getElementById('quiz-container');
@@ -117,8 +130,10 @@ function qRender() {
 
   if (qCur < quizQs.length) {
     const q = quizQs[qCur];
+    const backBtn = qCur > 0 ? `<span class="quiz-back">← Question précédente</span>` : '';
     el.innerHTML = `
       <div class="quiz-progress">${dots}</div>
+      ${backBtn}
       <div class="quiz-label">${q.label}</div>
       <div class="quiz-q">${q.text}</div>
       ${q.options.map((o, i) => `<div class="quiz-opt" data-i="${i}">${o.text}</div>`).join('')}
@@ -126,6 +141,7 @@ function qRender() {
     el.querySelectorAll('.quiz-opt').forEach(opt => {
       opt.addEventListener('click', () => qAnswer(Number((opt as HTMLElement).dataset.i)));
     });
+    el.querySelector('.quiz-back')?.addEventListener('click', qBack);
   } else {
     const sorted = Object.entries(qScores).sort((a, b) => b[1] - a[1]);
     let best = sorted[0]?.[0] ?? 'micro';
@@ -143,7 +159,7 @@ function qRender() {
       <span class="quiz-restart">Refaire le quiz</span>
     `;
     el.querySelector('.quiz-restart')?.addEventListener('click', () => {
-      qCur = 0; qScores = {}; qRender();
+      qCur = 0; qScores = {}; qAnswers = []; qRender();
     });
   }
 }
@@ -153,6 +169,7 @@ function qAnswer(i: number) {
   opts[i]?.classList.add('sel');
   const s = quizQs[qCur].options[i].scores;
   for (const [k, v] of Object.entries(s)) qScores[k] = (qScores[k] ?? 0) + v;
+  qAnswers[qCur] = i;
   setTimeout(() => { qCur++; qRender(); }, 250);
 }
 
