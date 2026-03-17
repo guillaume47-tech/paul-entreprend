@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allArticles = await getCollection('articles', ({ data }) => !data.draft);
+const recent = allArticles
+  .sort((a, b) => (b.data.updatedDate ?? b.data.pubDate).getTime() - (a.data.updatedDate ?? a.data.pubDate).getTime())
+  .slice(0, 6);
+
+const clusters = [
+  { name: 'Micro-entreprise', slug: 'micro-entreprise', emoji: '🧾' },
+  { name: 'SASU', slug: 'sasu', emoji: '🏢' },
+  { name: 'Statuts juridiques', slug: 'comparatifs', emoji: '⚖️' },
+  { name: 'Fiscalité & Aides', slug: 'fiscalite', emoji: '💰' },
+  { name: 'Banques pro', slug: 'banques-pro', emoji: '🏦' },
+  { name: 'Comptabilité', slug: 'comptabilite', emoji: '📊' },
+];
+---
+
+<BaseLayout
+  title="Paul Entreprend — Créer son entreprise en France, simplement"
+  description="Guides pratiques pour créer votre micro-entreprise, SASU, EURL ou SARL en France. Conseils d'un entrepreneur, pas d'un juriste."
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-b from-blue-50 to-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+        Créer son entreprise en France,<br class="hidden md:block" /> sans se prendre la tête
+      </h1>
+      <p class="text-xl text-gray-600 mb-8">
+        Je suis Paul, entrepreneur. J'ai créé ma SASU en 2023 et je documente tout ce que j'aurais voulu savoir avant.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/creer-micro-entreprise" class="bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-800 transition-colors">
+          Créer une micro-entreprise →
+        </a>
+        <a href="/creer-sasu" class="border border-blue-700 text-blue-700 font-semibold px-6 py-3 rounded-lg hover:bg-blue-50 transition-colors">
+          Créer une SASU →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Clusters -->
+  <section class="max-w-4xl mx-auto px-4 py-12">
+    <h2 class="text-2xl font-bold text-gray-900 mb-6">Explorer par thème</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {clusters.map((cluster) => (
+        <a
+          href={`/${cluster.slug}`}
+          class="flex items-center gap-3 p-4 border border-gray-200 rounded-xl hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+        >
+          <span class="text-2xl">{cluster.emoji}</span>
+          <span class="font-medium text-gray-900 group-hover:text-blue-700">{cluster.name}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Articles récents -->
+  {recent.length > 0 && (
+    <section class="max-w-4xl mx-auto px-4 pb-16">
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Derniers guides</h2>
+      <div class="grid gap-4">
+        {recent.map((article) => (
+          <a
+            href={`/${article.slug}`}
+            class="flex items-start gap-4 p-5 border border-gray-200 rounded-xl hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+          >
+            <div>
+              <span class="text-xs text-blue-600 font-medium uppercase tracking-wide block mb-1">
+                {article.data.cluster}
+              </span>
+              <h3 class="font-semibold text-gray-900 group-hover:text-blue-700 mb-1">
+                {article.data.title}
+              </h3>
+              <p class="text-sm text-gray-500">{article.data.description}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+</BaseLayout>

@@ -1,0 +1,32 @@
+---
+interface Article {
+  title: string;
+  slug: string;
+  cluster: string;
+}
+
+interface Props {
+  articles: Article[];
+}
+
+const { articles } = Astro.props;
+---
+
+<section class="mt-12 border-t border-gray-200 pt-8">
+  <h2 class="text-xl font-bold text-gray-900 mb-5">Sur le même sujet</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    {articles.map((article) => (
+      <a
+        href={`/${article.slug}`}
+        class="block p-4 border border-gray-200 rounded-xl hover:border-blue-300 hover:bg-blue-50 transition-colors group"
+      >
+        <span class="text-xs text-blue-600 font-medium uppercase tracking-wide block mb-1">
+          {article.cluster}
+        </span>
+        <span class="text-gray-900 font-medium group-hover:text-blue-700 leading-snug">
+          {article.title}
+        </span>
+      </a>
+    ))}
+  </div>
+</section>

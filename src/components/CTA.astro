@@ -1,0 +1,72 @@
+---
+interface Props {
+  type: string;
+  position?: 'inline' | 'bottom';
+}
+
+const { type, position = 'inline' } = Astro.props;
+
+const ctas: Record<string, { label: string; url: string; desc: string; badge?: string }> = {
+  legalplace: {
+    label: 'Créer ma société avec LegalPlace',
+    url: 'https://www.legalplace.fr/?ref=paulentreprend',
+    desc: 'Création à 0€ de frais de service (hors frais administratifs ~200€)',
+    badge: 'Recommandé par Paul',
+  },
+  legalstart: {
+    label: 'Créer avec Legalstart',
+    url: 'https://www.legalstart.fr/?ref=paulentreprend',
+    desc: 'Alternative solide, interface intuitive',
+  },
+  captaincontrat: {
+    label: 'Créer avec Captain Contrat',
+    url: 'https://www.captaincontrat.com/?ref=paulentreprend',
+    desc: 'Fort sur les contrats et statuts sur-mesure',
+  },
+  shine: {
+    label: 'Ouvrir un compte pro Shine',
+    url: 'https://www.shine.fr/?ref=paulentreprend',
+    desc: '1 mois offert · Compte pro pour indépendants et SAS',
+  },
+  qonto: {
+    label: 'Essayer Qonto',
+    url: 'https://qonto.com/fr/?ref=paulentreprend',
+    desc: 'Leader des comptes pro en France',
+  },
+  indy: {
+    label: 'Essayer Indy gratuitement',
+    url: 'https://www.indy.fr/?ref=paulentreprend',
+    desc: 'Comptabilité automatisée pour indépendants',
+  },
+  dougs: {
+    label: 'Découvrir Dougs',
+    url: 'https://www.dougs.fr/?ref=paulentreprend',
+    desc: 'Expert-comptable en ligne pour sociétés',
+  },
+  sedomicilier: {
+    label: 'Domicilier mon entreprise',
+    url: 'https://www.sedomicilier.fr/?ref=paulentreprend',
+    desc: 'Adresse professionnelle dès 6€/mois',
+  },
+};
+
+const cta = ctas[type] ?? ctas.legalplace;
+const isBottom = position === 'bottom';
+---
+
+<div class={`rounded-xl border-2 border-blue-100 bg-blue-50 p-5 ${isBottom ? 'text-center' : ''}`}>
+  {cta.badge && (
+    <span class="inline-block bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-full mb-3">
+      {cta.badge}
+    </span>
+  )}
+  <p class="text-gray-700 text-sm mb-3">{cta.desc}</p>
+  <a
+    href={cta.url}
+    target="_blank"
+    rel="noopener sponsored"
+    class="inline-block bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+  >
+    {cta.label} →
+  </a>
+</div>

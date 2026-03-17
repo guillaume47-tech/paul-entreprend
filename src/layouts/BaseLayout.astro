@@ -1,0 +1,77 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+}
+
+const { title, description, canonical, ogImage } = Astro.props;
+const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+const ogImageURL = ogImage ?? new URL('/og-default.png', Astro.site).href;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:site_name" content="Paul Entreprend" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+    <meta name="twitter:site" content="@paulentreprend" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="bg-white text-gray-900 font-sans">
+    <header class="border-b border-gray-100">
+      <div class="max-w-4xl mx-auto px-4 py-4 flex items-center justify-between">
+        <a href="/" class="font-bold text-xl text-blue-700 hover:text-blue-800">
+          Paul Entreprend
+        </a>
+        <nav class="hidden md:flex gap-6 text-sm text-gray-600">
+          <a href="/micro-entreprise" class="hover:text-blue-700">Micro-entreprise</a>
+          <a href="/sasu" class="hover:text-blue-700">SASU</a>
+          <a href="/comparatifs" class="hover:text-blue-700">Comparatifs</a>
+          <a href="/outils" class="hover:text-blue-700">Outils</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="border-t border-gray-100 mt-16">
+      <div class="max-w-4xl mx-auto px-4 py-8 text-sm text-gray-500">
+        <div class="flex flex-col md:flex-row justify-between gap-4">
+          <p>© 2026 Paul Entreprend — Site d'information sur la création d'entreprise en France</p>
+          <div class="flex gap-4">
+            <a href="/mentions-legales" class="hover:text-gray-900">Mentions légales</a>
+            <a href="/contact" class="hover:text-gray-900">Contact</a>
+          </div>
+        </div>
+        <p class="mt-4 text-xs">
+          Les informations publiées sur ce site sont à titre informatif. Consultez un professionnel pour votre situation.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

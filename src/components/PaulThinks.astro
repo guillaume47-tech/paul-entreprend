@@ -1,0 +1,13 @@
+---
+interface Props {
+  content: string;
+}
+const { content } = Astro.props;
+---
+
+<aside class="my-8 p-5 bg-amber-50 border-l-4 border-amber-400 rounded-r-xl">
+  <div class="flex items-center gap-2 mb-2">
+    <span class="text-amber-600 font-bold text-sm uppercase tracking-wide">💬 Ce que Paul en pense</span>
+  </div>
+  <p class="text-gray-800 italic">{content}</p>
+</aside>
