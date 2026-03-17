@@ -1,15 +1,15 @@
 :root {
-  --bg: #FAFAF8;
+  --bg: #f8faff;
   --bg2: #fff;
-  --bg3: #F3F2EE;
-  --text: #1A1A18;
-  --text2: #5C5C57;
-  --text3: #8A8A84;
-  --border: #E5E4DF;
-  --border2: #D1D0CA;
-  --accent: #2D5BE3;
-  --accent-bg: #EEF2FD;
-  --accent-dark: #1E3FA0;
+  --bg3: #f1f5f9;
+  --text: #192152;
+  --text2: #475569;
+  --text3: #94a3b8;
+  --border: #e2e8f0;
+  --border2: #cbd5e1;
+  --accent: #3058e5;
+  --accent-bg: #eef2fd;
+  --accent-dark: #2337aa;
   --green: #0F7B5F;
   --green-bg: #E6F5EE;
   --green-dark: #085041;
@@ -44,6 +44,7 @@ article.paul {
   font-size: 16.5px;
   line-height: 1.75;
   color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
 }
 article.paul h1 {
   font-family: 'DM Serif Display', Georgia, serif;

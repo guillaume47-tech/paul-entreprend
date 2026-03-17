@@ -11,6 +11,7 @@ interface Props {
 const { title, description, canonical, ogImage } = Astro.props;
 const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
 const ogImageURL = ogImage ?? new URL('/og-default.png', Astro.site).href;
+const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -37,20 +38,22 @@ const ogImageURL = ogImage ?? new URL('/og-default.png', Astro.site).href;
     <meta name="twitter:site" content="@paulentreprend" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body style="font-family:'DM Sans',system-ui,sans-serif;background:#FAFAF8;color:#1A1A18;-webkit-font-smoothing:antialiased;">
-    <header style="background:#fff;border-bottom:1px solid #E5E4DF;padding:14px 0;position:sticky;top:0;z-index:100;">
-      <div style="max-width:780px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;">
-        <a href="/" style="font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:#1A1A18;text-decoration:none;letter-spacing:-0.5px;">
-          Paul <span style="color:#2D5BE3;">Entreprend</span>
-        </a>
-        <nav style="display:flex;gap:20px;font-size:14px;">
-          <a href="/micro-entreprise" style="color:#5C5C57;text-decoration:none;">Micro-entreprise</a>
-          <a href="/sasu" style="color:#5C5C57;text-decoration:none;">SASU</a>
-          <a href="/comparatifs" style="color:#5C5C57;text-decoration:none;">Comparatifs</a>
+  <body class="pe-body">
+
+    <!-- HEADER -->
+    <header class="pe-header">
+      <div class="pe-header-inner">
+        <a href="/" class="pe-logo">Paul <span>Entreprend</span></a>
+        <nav class="pe-nav">
+          <a href="/micro-entreprise" class:list={['pe-nav-link', { active: currentPath.startsWith('/micro') }]}>Micro-entreprise</a>
+          <a href="/sasu" class:list={['pe-nav-link', { active: currentPath.startsWith('/sasu') }]}>SASU</a>
+          <a href="/comparatifs" class:list={['pe-nav-link', { active: currentPath.startsWith('/comparatifs') }]}>Comparatifs</a>
+          <a href="/outils" class:list={['pe-nav-link', { active: currentPath.startsWith('/outils') }]}>Outils</a>
         </nav>
+        <a href="/creer-une-sasu" class="pe-header-cta">Créer ma société →</a>
       </div>
     </header>
 
@@ -58,8 +61,177 @@ const ogImageURL = ogImage ?? new URL('/og-default.png', Astro.site).href;
       <slot />
     </main>
 
-    <footer style="background:#F3F2EE;border-top:1px solid #E5E4DF;padding:32px 24px;text-align:center;font-size:13px;color:#8A8A84;margin-top:60px;">
-      Paul Entreprend © 2026 · Guides pratiques pour créer et gérer ton entreprise en France
+    <!-- FOOTER -->
+    <footer class="pe-footer">
+      <div class="pe-footer-inner">
+        <div class="pe-footer-top">
+          <div class="pe-footer-brand">
+            <div class="pe-footer-logo">Paul Entreprend</div>
+            <p>Guides pratiques pour créer et gérer ton entreprise en France. Par un entrepreneur, pas un juriste.</p>
+          </div>
+          <div class="pe-footer-links">
+            <div>
+              <div class="pe-footer-col-title">Créer sa société</div>
+              <a href="/creer-micro-entreprise">Micro-entreprise</a>
+              <a href="/creer-une-sasu">SASU</a>
+              <a href="/creer-une-eurl">EURL</a>
+              <a href="/creer-une-sarl">SARL</a>
+            </div>
+            <div>
+              <div class="pe-footer-col-title">Outils & Banques</div>
+              <a href="/compte-bancaire-professionnel">Compte pro</a>
+              <a href="/domiciliation-entreprise">Domiciliation</a>
+              <a href="/comptabilite-sasu">Comptabilité</a>
+            </div>
+            <div>
+              <div class="pe-footer-col-title">Le site</div>
+              <a href="/a-propos">À propos de Paul</a>
+              <a href="/mentions-legales">Mentions légales</a>
+              <a href="/contact">Contact</a>
+            </div>
+          </div>
+        </div>
+        <div class="pe-footer-bottom">
+          <span>© 2026 Paul Entreprend</span>
+          <span>Les informations publiées sont à titre indicatif — consultez un professionnel pour votre situation.</span>
+        </div>
+      </div>
     </footer>
+
   </body>
 </html>
+
+<style>
+/* ===== GLOBAL ===== */
+.pe-body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #fff;
+  color: #192152;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+
+/* ===== HEADER ===== */
+.pe-header {
+  background: #3058e5;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+}
+.pe-header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.pe-logo {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+}
+.pe-logo span { color: #fefbc5; }
+.pe-nav {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+.pe-nav-link {
+  color: rgba(255,255,255,.85);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all .15s;
+}
+.pe-nav-link:hover, .pe-nav-link.active {
+  color: #fff;
+  background: rgba(255,255,255,.15);
+}
+.pe-header-cta {
+  background: #fefbc5;
+  color: #192152;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background .15s;
+}
+.pe-header-cta:hover { background: #fdf5a0; }
+
+/* ===== FOOTER ===== */
+.pe-footer {
+  background: #192152;
+  color: #fff;
+  margin-top: 80px;
+}
+.pe-footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 24px 32px;
+}
+.pe-footer-top {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 60px;
+  margin-bottom: 48px;
+}
+.pe-footer-logo {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fefbc5;
+  margin-bottom: 12px;
+}
+.pe-footer-brand p {
+  font-size: 14px;
+  color: rgba(255,255,255,.6);
+  line-height: 1.6;
+}
+.pe-footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+.pe-footer-col-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: rgba(255,255,255,.5);
+  margin-bottom: 12px;
+}
+.pe-footer-links a {
+  display: block;
+  color: rgba(255,255,255,.75);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 8px;
+  transition: color .15s;
+}
+.pe-footer-links a:hover { color: #fefbc5; }
+.pe-footer-bottom {
+  border-top: 1px solid rgba(255,255,255,.1);
+  padding-top: 24px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,.4);
+}
+
+@media (max-width: 768px) {
+  .pe-nav { display: none; }
+  .pe-footer-top { grid-template-columns: 1fr; gap: 32px; }
+  .pe-footer-links { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
