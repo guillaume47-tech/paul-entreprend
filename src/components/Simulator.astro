@@ -1,0 +1,171 @@
+---
+// Simulateur Micro-entreprise vs SASU — Paul Entreprend
+---
+
+<div class="widget-section">
+  <div class="sim-wrap">
+    <div class="sim-title">Simulateur : combien il te reste en poche ?</div>
+    <div class="sim-sub">Compare micro-entreprise vs SASU selon ton CA, ton imposition et tes charges réelles</div>
+
+    <div class="sim-input">
+      <div class="sim-input-header">
+        <span>Chiffre d'affaires annuel</span>
+        <span class="sim-input-val" id="sim-ca-val">50 000 €</span>
+      </div>
+      <input type="range" min="10000" max="200000" step="5000" value="50000" id="sim-ca" />
+    </div>
+
+    <div class="sim-input">
+      <div class="sim-input-header">
+        <span>Taux marginal d'imposition</span>
+        <span class="sim-input-val" id="sim-tmi-val">30%</span>
+      </div>
+      <input type="range" min="0" max="45" step="1" value="30" id="sim-tmi" />
+    </div>
+
+    <div class="sim-input">
+      <div class="sim-input-header">
+        <span>Charges professionnelles (% du CA)</span>
+        <span class="sim-input-val" id="sim-charges-val">10%</span>
+      </div>
+      <input type="range" min="0" max="50" step="5" value="10" id="sim-charges" />
+      <div class="sim-charges-hint">Outils, abonnements, déplacements, sous-traitance… En micro, ces charges ne sont pas déductibles.</div>
+    </div>
+
+    <div class="sim-toggle-label">Type d'activité</div>
+    <div class="sim-toggle">
+      <div class="sim-toggle-btn active" data-type="service" id="btn-service">Prestation de service</div>
+      <div class="sim-toggle-btn" data-type="commerce" id="btn-commerce">Vente de marchandises</div>
+    </div>
+
+    <div id="sim-result"></div>
+    <div class="sim-note" id="sim-note"></div>
+  </div>
+</div>
+
+<script>
+let simType = 'service';
+
+function simFmt(n: number) {
+  return Math.round(n).toLocaleString('fr-FR') + ' €';
+}
+
+function simSetType(t: string) {
+  simType = t;
+  document.querySelectorAll('.sim-toggle-btn').forEach(b => {
+    b.classList.toggle('active', (b as HTMLElement).dataset.type === t);
+  });
+  simCalc();
+}
+
+function simCalc() {
+  const ca = Number((document.getElementById('sim-ca') as HTMLInputElement).value);
+  const tmi = Number((document.getElementById('sim-tmi') as HTMLInputElement).value) / 100;
+  const chargesPct = Number((document.getElementById('sim-charges') as HTMLInputElement).value) / 100;
+
+  const caValEl = document.getElementById('sim-ca-val');
+  const tmiValEl = document.getElementById('sim-tmi-val');
+  const chargesValEl = document.getElementById('sim-charges-val');
+  if (caValEl) caValEl.textContent = simFmt(ca);
+  if (tmiValEl) tmiValEl.textContent = Math.round(tmi * 100) + '%';
+  if (chargesValEl) chargesValEl.textContent = Math.round(chargesPct * 100) + '% (' + simFmt(ca * chargesPct) + ')';
+
+  // MICRO
+  const cotM = simType === 'service' ? 0.231 : 0.124;
+  const abat = simType === 'service' ? 0.50 : 0.71;
+  const mCotis = ca * cotM;
+  const mIR = ca * (1 - abat) * tmi;
+  const mChargesReelles = ca * chargesPct;
+  const mNet = ca - mCotis - mIR - mChargesReelles;
+
+  // SASU
+  const chargesReelles = ca * chargesPct;
+  const comptaCost = 1500;
+  const caNet = ca - chargesReelles - comptaCost;
+  const sBr = Math.max(0, caNet * 0.5);
+  const sPatron = sBr * 0.45;
+  const sSal = sBr * 0.22;
+  const sNetSalaire = sBr - sSal;
+  const sResultat = Math.max(0, caNet - sBr - sPatron);
+  const sIS = sResultat <= 42500 ? sResultat * 0.15 : 42500 * 0.15 + (sResultat - 42500) * 0.25;
+  const sDivBrut = Math.max(0, sResultat - sIS);
+  const sDivNet = sDivBrut * 0.70;
+  const sIRsalaire = sNetSalaire * tmi;
+  const sTotal = sNetSalaire - sIRsalaire + sDivNet;
+
+  const mPct = ca > 0 ? Math.round(mNet / ca * 100) : 0;
+  const sPct = ca > 0 ? Math.round(sTotal / ca * 100) : 0;
+  const w = mNet >= sTotal ? 'micro' : 'sasu';
+  const diff = Math.abs(mNet - sTotal);
+
+  const detailMicro = `Cotisations ${simFmt(mCotis)} · IR ${simFmt(mIR)} · Charges réelles ${simFmt(mChargesReelles)} (non déduites)`;
+  const detailSasu = `Salaire net ${simFmt(sNetSalaire)} · IR ${simFmt(sIRsalaire)} · Dividendes nets ${simFmt(sDivNet)} · Compta ${simFmt(comptaCost)}`;
+
+  const resultEl = document.getElementById('sim-result');
+  if (resultEl) {
+    resultEl.innerHTML = `
+      <div class="sim-cards">
+        <div class="sim-card">
+          <div class="sim-card-label">Micro-entreprise${w === 'micro' ? '<span class="sim-winner sim-winner-purple">+ rentable</span>' : ''}</div>
+          <div class="sim-card-val sim-purple">${simFmt(mNet)}</div>
+          <div class="sim-card-sub">${mPct}% du CA en poche</div>
+          <div class="sim-card-detail">${detailMicro}</div>
+        </div>
+        <div class="sim-card">
+          <div class="sim-card-label">SASU${w === 'sasu' ? '<span class="sim-winner sim-winner-green">+ rentable</span>' : ''}</div>
+          <div class="sim-card-val sim-green">${simFmt(sTotal)}</div>
+          <div class="sim-card-sub">${sPct}% du CA en poche</div>
+          <div class="sim-card-detail">${detailSasu}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  let noteExtra = '';
+  if (chargesPct >= 0.15) {
+    noteExtra = ` En micro, tes charges réelles ne sont pas déductibles — l'abattement forfaitaire de ${simType === 'service' ? '50' : '71'}% est censé les couvrir.`;
+  }
+
+  const noteEl = document.getElementById('sim-note');
+  if (noteEl) {
+    noteEl.innerHTML = `Différence : <strong>${simFmt(diff)}/an</strong> en faveur de la <strong>${w === 'micro' ? 'micro-entreprise' : 'SASU'}</strong>. Taux URSSAF 2026, IS 15% puis 25%, flat tax 30%.${noteExtra}`;
+  }
+}
+
+document.getElementById('sim-ca')?.addEventListener('input', simCalc);
+document.getElementById('sim-tmi')?.addEventListener('input', simCalc);
+document.getElementById('sim-charges')?.addEventListener('input', simCalc);
+document.getElementById('btn-service')?.addEventListener('click', () => simSetType('service'));
+document.getElementById('btn-commerce')?.addEventListener('click', () => simSetType('commerce'));
+
+simCalc();
+</script>
+
+<style>
+.sim-wrap { max-width: 560px; margin: 0 auto; }
+.sim-title { font-size: 18px; font-weight: 600; margin-bottom: 4px; }
+.sim-sub { font-size: 13px; color: var(--text3); margin-bottom: 18px; }
+.sim-input { margin-bottom: 16px; }
+.sim-input-header { display: flex; justify-content: space-between; font-size: 13px; color: var(--text3); margin-bottom: 6px; }
+.sim-input-val { font-weight: 600; color: var(--text); }
+.sim-charges-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
+input[type=range] { width: 100%; height: 6px; -webkit-appearance: none; background: var(--border); border-radius: 3px; outline: none; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--accent); border-radius: 50%; cursor: pointer; }
+.sim-toggle-label { margin-bottom: 6px; font-size: 13px; color: var(--text3); }
+.sim-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
+.sim-toggle-btn { flex: 1; padding: 10px; border: 1.5px solid var(--border); border-radius: var(--radius); text-align: center; cursor: pointer; font-size: 13px; background: var(--bg2); transition: all .15s; }
+.sim-toggle-btn.active { border-color: var(--purple); background: var(--purple-bg); color: var(--purple); font-weight: 600; }
+.sim-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+.sim-card { background: var(--bg3); border-radius: var(--radius); padding: 16px; }
+.sim-card-label { font-size: 12px; color: var(--text3); }
+.sim-card-val { font-size: 22px; font-weight: 700; margin-top: 4px; }
+.sim-card-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.sim-card-detail { font-size: 11px; color: var(--text3); margin-top: 6px; line-height: 1.4; }
+.sim-purple { color: var(--purple); }
+.sim-green { color: var(--green); }
+.sim-winner { display: inline-block; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-left: 6px; }
+.sim-winner-purple { background: var(--purple-bg); color: var(--purple); }
+.sim-winner-green { background: var(--green-bg); color: var(--green); }
+.sim-note { font-size: 12px; color: var(--text3); margin-top: 14px; text-align: center; }
+@media (max-width: 600px) { .sim-cards { grid-template-columns: 1fr; } }
+</style>

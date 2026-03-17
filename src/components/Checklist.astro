@@ -1,0 +1,56 @@
+---
+interface Props {
+  title?: string;
+  items: string[];
+}
+const { title = 'Checklist', items } = Astro.props;
+---
+
+<div class="widget-section">
+  <div class="check-wrap">
+    <div class="check-header">
+      <span class="check-title">{title}</span>
+      <span class="check-progress" id="check-count">0/{items.length}</span>
+    </div>
+    <div class="check-bar"><div class="check-fill" id="check-bar"></div></div>
+    <div id="check-items">
+      {items.map((item, i) => (
+        <label class="check-item" id={`ci-${i}`}>
+          <input type="checkbox" data-i={i} />
+          <span>{item}</span>
+        </label>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+function checkUpdate() {
+  const boxes = document.querySelectorAll('#check-items input[type=checkbox]');
+  const total = boxes.length;
+  const done = [...boxes].filter(b => (b as HTMLInputElement).checked).length;
+  const countEl = document.getElementById('check-count');
+  const barEl = document.getElementById('check-bar');
+  if (countEl) countEl.textContent = `${done}/${total}`;
+  if (barEl) barEl.style.width = Math.round(done / total * 100) + '%';
+  boxes.forEach((b, i) => {
+    const label = document.getElementById(`ci-${i}`);
+    if (label) label.classList.toggle('done', (b as HTMLInputElement).checked);
+  });
+}
+document.querySelectorAll('#check-items input[type=checkbox]').forEach(b => {
+  b.addEventListener('change', checkUpdate);
+});
+</script>
+
+<style>
+.check-wrap { max-width: 500px; margin: 0 auto; }
+.check-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.check-title { font-size: 16px; font-weight: 600; }
+.check-progress { font-size: 13px; color: var(--text3); }
+.check-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 16px; overflow: hidden; }
+.check-fill { height: 100%; width: 0%; background: var(--green); border-radius: 2px; transition: width .3s; }
+.check-item { display: flex; align-items: start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 14px; cursor: pointer; }
+.check-item input { margin-top: 3px; accent-color: var(--green); }
+.check-item.done span { text-decoration: line-through; color: var(--text3); }
+</style>

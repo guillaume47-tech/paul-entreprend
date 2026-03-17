@@ -1,73 +1,41 @@
 ---
 interface Props {
-  type: string;
-  position?: 'inline' | 'bottom';
+  type: 'legalplace' | 'qonto';
+  variant?: 'blue' | 'green';
+  title?: string;
+  sub?: string;
+  label?: string;
 }
 
-const { type, position = 'inline' } = Astro.props;
+const { type, variant, title, sub, label } = Astro.props;
 
-const ctas: Record<string, { label: string; url: string; desc: string; badge?: string }> = {
+const defaults = {
   legalplace: {
-    label: 'Créer ma société avec LegalPlace',
+    title: 'Créer ta SASU gratuitement',
+    sub: 'Statuts, annonce légale et dépôt gérés pour toi — tu ne paies que les ~200€ de frais administratifs',
+    label: 'Créer ma SASU avec LegalPlace →',
     url: 'https://www.legalplace.fr/?ref=paulentreprend',
-    desc: 'Création à 0€ de frais de service (hors frais administratifs ~200€)',
-    badge: 'Recommandé par Paul',
-  },
-  legalstart: {
-    label: 'Créer avec Legalstart',
-    url: 'https://www.legalstart.fr/?ref=paulentreprend',
-    desc: 'Alternative solide, interface intuitive',
-  },
-  captaincontrat: {
-    label: 'Créer avec Captain Contrat',
-    url: 'https://www.captaincontrat.com/?ref=paulentreprend',
-    desc: 'Fort sur les contrats et statuts sur-mesure',
-  },
-  shine: {
-    label: 'Ouvrir un compte pro Shine',
-    url: 'https://www.shine.fr/?ref=paulentreprend',
-    desc: '1 mois offert · Compte pro pour indépendants et SAS',
+    variant: 'blue',
   },
   qonto: {
-    label: 'Ouvrir un compte pro Qonto',
+    title: 'Ouvrir un compte pro + déposer ton capital',
+    sub: 'Dépôt de capital en ligne, attestation rapide, compte pro inclus',
+    label: 'Ouvrir un compte Qonto →',
     url: 'https://qonto.com/fr/?ref=paulentreprend',
-    desc: 'Compte pro + dépôt de capital pour SASU — leader en France',
-    badge: 'Recommandé par Paul',
-  },
-  indy: {
-    label: 'Essayer Indy gratuitement',
-    url: 'https://www.indy.fr/?ref=paulentreprend',
-    desc: 'Comptabilité automatisée pour indépendants',
-  },
-  dougs: {
-    label: 'Découvrir Dougs',
-    url: 'https://www.dougs.fr/?ref=paulentreprend',
-    desc: 'Expert-comptable en ligne pour sociétés',
-  },
-  sedomicilier: {
-    label: 'Domicilier mon entreprise',
-    url: 'https://www.sedomicilier.fr/?ref=paulentreprend',
-    desc: 'Adresse professionnelle dès 6€/mois',
+    variant: 'green',
   },
 };
 
-const cta = ctas[type] ?? ctas.legalplace;
-const isBottom = position === 'bottom';
+const d = defaults[type];
+const color = (variant ?? d.variant) === 'green' ? 'green' : 'primary';
 ---
 
-<div class={`rounded-xl border-2 border-blue-100 bg-blue-50 p-5 ${isBottom ? 'text-center' : ''}`}>
-  {cta.badge && (
-    <span class="inline-block bg-blue-700 text-white text-xs font-semibold px-3 py-1 rounded-full mb-3">
-      {cta.badge}
-    </span>
-  )}
-  <p class="text-gray-700 text-sm mb-3">{cta.desc}</p>
-  <a
-    href={cta.url}
-    target="_blank"
-    rel="noopener sponsored"
-    class="inline-block bg-blue-700 hover:bg-blue-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
-  >
-    {cta.label} →
+<div class={`cta-box${color === 'green' ? ' green' : ''}`}>
+  <div class="cta-text">
+    <div class="cta-title">{title ?? d.title}</div>
+    <div class="cta-sub">{sub ?? d.sub}</div>
+  </div>
+  <a href={d.url} class={`cta-btn ${color}`} target="_blank" rel="noopener sponsored">
+    {label ?? d.label}
   </a>
 </div>

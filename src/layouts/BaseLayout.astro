@@ -22,7 +22,6 @@ const ogImageURL = ogImage ?? new URL('/og-default.png', Astro.site).href;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
-    <!-- Open Graph -->
     <meta property="og:type" content="article" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -31,42 +30,36 @@ const ogImageURL = ogImage ?? new URL('/og-default.png', Astro.site).href;
     <meta property="og:locale" content="fr_FR" />
     <meta property="og:site_name" content="Paul Entreprend" />
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageURL} />
     <meta name="twitter:site" content="@paulentreprend" />
 
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700&family=DM+Serif+Display&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
-  <body class="bg-white text-gray-900 font-sans">
-    <header class="max-w-2xl mx-auto px-4 py-5 flex items-center justify-between">
-      <a href="/" class="font-semibold text-gray-900 hover:text-gray-600 transition-colors">
-        Paul Entreprend
-      </a>
-      <nav class="flex gap-5 text-sm text-gray-500">
-        <a href="/micro-entreprise" class="hover:text-gray-900 transition-colors">Micro</a>
-        <a href="/sasu" class="hover:text-gray-900 transition-colors">SASU</a>
-        <a href="/comparatifs" class="hover:text-gray-900 transition-colors">Comparatifs</a>
-      </nav>
+  <body style="font-family:'DM Sans',system-ui,sans-serif;background:#FAFAF8;color:#1A1A18;-webkit-font-smoothing:antialiased;">
+    <header style="background:#fff;border-bottom:1px solid #E5E4DF;padding:14px 0;position:sticky;top:0;z-index:100;">
+      <div style="max-width:780px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;">
+        <a href="/" style="font-family:'DM Serif Display',Georgia,serif;font-size:20px;color:#1A1A18;text-decoration:none;letter-spacing:-0.5px;">
+          Paul <span style="color:#2D5BE3;">Entreprend</span>
+        </a>
+        <nav style="display:flex;gap:20px;font-size:14px;">
+          <a href="/micro-entreprise" style="color:#5C5C57;text-decoration:none;">Micro-entreprise</a>
+          <a href="/sasu" style="color:#5C5C57;text-decoration:none;">SASU</a>
+          <a href="/comparatifs" style="color:#5C5C57;text-decoration:none;">Comparatifs</a>
+        </nav>
+      </div>
     </header>
 
     <main>
       <slot />
     </main>
 
-    <footer class="max-w-2xl mx-auto px-4 py-10 mt-10 border-t border-gray-100">
-      <div class="flex flex-col sm:flex-row justify-between gap-3 text-sm text-gray-400">
-        <span>© 2026 Paul Entreprend</span>
-        <div class="flex gap-4">
-          <a href="/mentions-legales" class="hover:text-gray-600 transition-colors">Mentions légales</a>
-          <a href="/contact" class="hover:text-gray-600 transition-colors">Contact</a>
-        </div>
-      </div>
-      <p class="mt-3 text-xs text-gray-400">
-        Informations à titre indicatif — consultez un professionnel pour votre situation.
-      </p>
+    <footer style="background:#F3F2EE;border-top:1px solid #E5E4DF;padding:32px 24px;text-align:center;font-size:13px;color:#8A8A84;margin-top:60px;">
+      Paul Entreprend © 2026 · Guides pratiques pour créer et gérer ton entreprise en France
     </footer>
   </body>
 </html>

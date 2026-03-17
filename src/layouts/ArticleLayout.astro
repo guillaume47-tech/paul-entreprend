@@ -1,6 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
-import CTA from '../components/CTA.astro';
+import '../styles/article.css';
 
 interface Props {
   title: string;
@@ -8,58 +8,48 @@ interface Props {
   pubDate: Date;
   updatedDate?: Date;
   cluster: string;
-  cta?: string;
+  clusterSlug?: string;
   slug: string;
+  schema?: object;
 }
 
-const { title, description, pubDate, updatedDate, cluster, cta, slug } = Astro.props;
+const { title, description, pubDate, updatedDate, cluster, clusterSlug, slug, schema } = Astro.props;
 
-const dateFormatted = (updatedDate ?? pubDate).toLocaleDateString('fr-FR', {
+const dateDisplay = (updatedDate ?? pubDate).toLocaleDateString('fr-FR', {
   year: 'numeric', month: 'long', day: 'numeric'
 });
 
-const readingTime = 8; // Calculé dynamiquement en prod
+const schemaJson = schema ?? {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "datePublished": pubDate.toISOString(),
+  "dateModified": (updatedDate ?? pubDate).toISOString(),
+  "author": {
+    "@type": "Person",
+    "name": "Paul",
+    "url": "https://paul-entreprend.fr/a-propos"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Paul Entreprend",
+    "url": "https://paul-entreprend.fr"
+  }
+};
 ---
 
 <BaseLayout title={`${title} | Paul Entreprend`} description={description}>
-  <article class="max-w-4xl mx-auto px-4 py-10">
+  <script type="application/ld+json" set:html={JSON.stringify(schemaJson)} />
 
-    <!-- Breadcrumb -->
-    <nav class="text-sm text-gray-500 mb-6" aria-label="Fil d'Ariane">
-      <ol class="flex items-center gap-2 flex-wrap">
-        <li><a href="/" class="hover:text-blue-700">Accueil</a></li>
-        <li>›</li>
-        <li><a href={`/${cluster.toLowerCase().replace(/ /g, '-')}`} class="hover:text-blue-700">{cluster}</a></li>
-        <li>›</li>
-        <li class="text-gray-900 font-medium truncate max-w-xs">{title}</li>
-      </ol>
-    </nav>
+  <nav class="breadcrumb">
+    <a href="/">Accueil</a><span>›</span>
+    <a href={`/${clusterSlug ?? cluster.toLowerCase().replace(/ /g, '-')}`}>{cluster}</a><span>›</span>
+    {title}
+  </nav>
 
-    <!-- Header -->
-    <header class="mb-8">
-      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 leading-tight mb-4">
-        {title}
-      </h1>
-      <p class="text-gray-500 text-sm">
-        Mis à jour le {dateFormatted} · Par <a href="/a-propos" class="text-blue-700 hover:underline">Paul</a> · {readingTime} min de lecture
-      </p>
-    </header>
-
-    <!-- Content -->
-    <div class="prose prose-lg max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-a:text-blue-700 prose-a:no-underline hover:prose-a:underline">
-      <slot />
-    </div>
-
-    <!-- CTA final -->
-    {cta && (
-      <div class="mt-12">
-        <CTA type={cta} position="bottom" />
-      </div>
-    )}
-
-    <!-- Disclaimer -->
-    <div class="mt-10 p-4 bg-gray-50 rounded-lg border border-gray-200 text-sm text-gray-600">
-      <strong>Disclaimer :</strong> Cet article est informatif et ne constitue pas un conseil juridique ou fiscal. Consultez un professionnel pour votre situation personnelle.
-    </div>
+  <article class="paul">
+    <slot />
+    <p class="disclaimer">Cet article est rédigé à titre informatif et ne constitue pas un conseil juridique. Pour des situations complexes, consulte un avocat ou un expert-comptable.</p>
   </article>
 </BaseLayout>
