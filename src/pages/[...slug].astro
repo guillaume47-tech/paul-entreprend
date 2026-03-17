@@ -12,6 +12,43 @@ export async function getStaticPaths() {
 
 const { article } = Astro.props;
 const { Content } = await render(article);
+
+// FAQ et HowTo par article — à enrichir au fur et à mesure
+const faqData: Record<string, { question: string; answer: string }[]> = {
+  'creer-une-sasu': [
+    {
+      question: "Peut-on créer une SASU gratuitement ?",
+      answer: "Pas totalement — les frais de greffe (37,45€), d'annonce légale (138-162€) et de déclaration des bénéficiaires effectifs (21,41€) sont incompressibles. Côté accompagnement, LegalPlace propose une offre à 0€ de frais de service. Tu ne paies que les frais administratifs, soit environ 200€."
+    },
+    {
+      question: "Combien de temps pour créer une SASU ?",
+      answer: "1 à 3 semaines au total. Rédaction statuts + dépôt capital : 2-3 jours. Publication annonce légale : instantané en ligne. Dépôt Guichet Unique : 1 heure. Traitement greffe : 7 à 15 jours ouvrés."
+    },
+    {
+      question: "Faut-il un expert-comptable pour une SASU ?",
+      answer: "Pas légalement obligatoire, mais fortement recommandé. La SASU est soumise à l'IS, doit déposer des comptes annuels et produire une liasse fiscale. Un expert-comptable en ligne coûte entre 100€ et 200€/mois."
+    },
+    {
+      question: "Peut-on créer une SASU en étant salarié ?",
+      answer: "Oui, sauf clause d'exclusivité ou de non-concurrence dans ton contrat. L'obligation de loyauté s'applique : tu ne peux pas concurrencer ton employeur directement."
+    },
+    {
+      question: "SASU ou auto-entrepreneur : lequel choisir ?",
+      answer: "La micro-entreprise a un plafond de CA (77 700€ services), compta simplifiée, mais zéro protection du patrimoine et pas d'optimisation salaire/dividendes. La SASU n'a pas de plafond, protège le patrimoine, permet l'optimisation fiscale, mais coûte plus cher en gestion."
+    },
+  ],
+};
+
+const howToData: Record<string, { name: string; text: string }[]> = {
+  'creer-une-sasu': [
+    { name: "Choisir la dénomination sociale et l'adresse", text: "Vérifie la disponibilité du nom sur l'INPI et Societe.com. Choisis l'adresse du siège : domicile personnel, domiciliation commerciale (10-70€/mois) ou local commercial." },
+    { name: "Rédiger les statuts de la SASU", text: "Les statuts fixent les règles de gouvernance. Mentions obligatoires (art. L210-2 C.com) : forme juridique, dénomination, siège, objet social, capital, durée, modalités de direction." },
+    { name: "Déposer le capital social", text: "Capital minimum légal : 1€. Déposer au minimum 50% des apports en numéraire à la création (art. L225-3 C.com). Tu reçois une attestation de dépôt des fonds." },
+    { name: "Publier l'annonce légale de constitution", text: "Publication obligatoire dans un JAL ou SPEL habilité. Coût : forfait entre 138€ et 162€ selon le département (arrêté du 19 nov. 2024)." },
+    { name: "Déposer le dossier sur le Guichet Unique (INPI)", text: "Dépôt sur procedures.inpi.fr. Documents requis : statuts signés, attestation de dépôt du capital, attestation de parution, justificatif de domiciliation, pièce d'identité, déclaration de non-condamnation. Frais : 37,45€ + 21,41€." },
+    { name: "Recevoir le Kbis et démarrer l'activité", text: "Délai : 7 à 15 jours ouvrés après dépôt complet. Tu reçois le numéro SIREN/SIRET, code APE, extrait Kbis, numéro de TVA intracommunautaire. Le capital peut alors être débloqué." },
+  ],
+};
 ---
 
 <ArticleLayout
@@ -22,6 +59,8 @@ const { Content } = await render(article);
   cluster={article.data.cluster}
   clusterSlug={article.data.clusterSlug}
   slug={article.id}
+  faq={faqData[article.id]}
+  howToSteps={howToData[article.id]}
 >
   <Content />
 </ArticleLayout>

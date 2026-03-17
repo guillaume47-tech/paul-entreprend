@@ -12,6 +12,7 @@ const { title, description, canonical, ogImage } = Astro.props;
 const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
 const ogImageURL = ogImage ?? new URL('/og-default.png', Astro.site).href;
 const currentPath = Astro.url.pathname;
+const isHome = currentPath === '/';
 ---
 
 <!doctype html>
@@ -23,7 +24,7 @@ const currentPath = Astro.url.pathname;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
-    <meta property="og:type" content="article" />
+    <meta property="og:type" content={isHome ? 'website' : 'article'} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
@@ -40,6 +41,41 @@ const currentPath = Astro.url.pathname;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    {isHome && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://paul-entreprend.fr/#website",
+            "url": "https://paul-entreprend.fr",
+            "name": "Paul Entreprend",
+            "description": "Guides pratiques pour créer et gérer ton entreprise en France. Par un entrepreneur, pas un juriste.",
+            "inLanguage": "fr-FR",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://paul-entreprend.fr/?q={search_term_string}"
+              },
+              "query-input": "required name=search_term_string"
+            }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://paul-entreprend.fr/#organization",
+            "name": "Paul Entreprend",
+            "url": "https://paul-entreprend.fr",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://paul-entreprend.fr/og-default.png"
+            },
+            "sameAs": []
+          }
+        ]
+      })} />
+    )}
   </head>
   <body class="pe-body">
 
