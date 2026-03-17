@@ -1,0 +1,47 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Décommenter pour dev local (avec npx decap-server)
+# backend:
+#   name: proxy
+#   proxy_url: http://localhost:8081/api/v1
+
+local_backend: true
+
+media_folder: public/images
+public_folder: /images
+
+collections:
+  - name: articles
+    label: Articles
+    folder: src/content/articles
+    create: true
+    extension: mdx
+    format: frontmatter
+    slug: "{{slug}}"
+    fields:
+      - { label: Titre, name: title, widget: string }
+      - { label: Slug URL, name: slug, widget: string, hint: "ex: creer-une-sasu" }
+      - label: Meta description
+        name: description
+        widget: text
+        hint: "150-160 caractères pour Google"
+      - { label: Date de publication, name: pubDate, widget: datetime, date_format: YYYY-MM-DD, time_format: false }
+      - { label: Date de mise à jour, name: updatedDate, widget: datetime, date_format: YYYY-MM-DD, time_format: false, required: false }
+      - { label: Cluster SEO, name: cluster, widget: string, hint: "ex: SASU, Micro-entreprise" }
+      - { label: Slug du cluster, name: clusterSlug, widget: string, hint: "ex: sasu, micro-entreprise" }
+      - label: Mots-clés
+        name: keywords
+        widget: list
+        field: { label: Mot-clé, name: keyword, widget: string }
+      - label: CTA principal
+        name: cta
+        widget: select
+        options:
+          - { label: LegalPlace, value: legalplace }
+          - { label: Qonto, value: qonto }
+        default: legalplace
+      - { label: Score Noël Ceta (0-7), name: noelScore, widget: number, value_type: int, min: 0, max: 7, required: false }
+      - { label: Brouillon, name: draft, widget: boolean, default: false }
+      - { label: Contenu, name: body, widget: markdown }
